@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Create a digitally signed diploma and store in the swarm decentralised storage by Krypted.">
+  <meta property="og:title" content="Krypted | Educhain Swarm - Proof of Concept" />
+  <meta property="og:description" content="Krypted | Educhain Swarm - Proof of Concept" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>EduChain | Krypted</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/assets/dist/css/material.css">
+  <link rel="stylesheet" href="/assets/dist/css/base.css">
+  <link rel="stylesheet" href="/assets/dist/css/view.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.0/vue-resource.min.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.min.js"></script>
+</head>
+
+<body class="mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header>
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">
+                <a href="/">
+                    <img src="/assets/dist/img/logo.png" />
+                </a>
+          </span>
+          <div class="mdl-layout-spacer"></div>
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a class="mdl-navigation__link" href="/about">About</a>
+            <a class="mdl-navigation__link" href="/contact">Contact</a>
+          </nav>
+        </div>
+      </header>
+      <main class="mdl-layout__content" id="diploma-view">
+        <div class="page-content">
+          <div class="certificate">
+            <div class="mdl-grid">
+              <div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--3-offset-desktop mdl-cell--8-col-tablet mdl-cell--2-offset-desktop mdl-cell--12-col-phone">
+                <div class="certificate-card mdl-card mdl-shadow--2dp">
+                  <div class="top-contents">
+                    <div class="mdl-card__title">
+                      <h2 class="mdl-card__title-text text-align-left">
+                        <strong>krypted</strong> &#183; signature
+                        <br>
+                        <span class="date-of-proof">DATE: {{proofOfDate}}</span>
+                      </h2>
+                    </div>
+                    <div class="mdl-card__supporting-text student-info text-align-left">
+                      <div class="name">
+                        {{fullName}}
+                      </div>
+                      <div class="degree">
+                        <div class="gpa">{{gpa}}</div>
+                        <div class="title">Grade</div>
+                      </div>
+                      <div class="picture">
+                        <img class="qr-code" id="qr-code" src="" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mdl-card__actions mdl-card--border">
+                    <div class="taken-lessons">
+                      <h6>TRANSCRIPT</h6>
+                      <div class="lessons-list">
+                        <div class="mdl-grid mdl-grid--no-spacing lesson" v-for="item in items">
+                          <div class="mdl-cell mdl-cell--10-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone">
+                            {{item.title}}
+                          </div>
+                          <div class="mdl-cell mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-cell--2-col-phone text-align-right">
+                            {{item.grade}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mdl-card__menu">
+                    <div class="diploma-badge">DIPLOMA</div>
+                  </div>
+                  <div class="view--issuer-footer">
+                    <span>
+                        This certificate is created by
+                      <a :href="'https://etherscan.io/address/'+ issuer">{{issuerAuthority}}</a> using an Ethereum private key.
+                    </span>
+                    <p class="view--issuer-footer--signature">
+                      Sig: {{signature}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div class="copyright-section">
+        <div class="row">
+          <p> 2018 © <img src="/assets/dist/img/logoimg.png" height="25"> · All rights are reserved.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <script src="/assets/dist/js/moment.min.js"></script>
+  <script src="/assets/dist/js/material.min.js"></script>
+  <script src="/lib/app.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119866073-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-119866073-1');
+  </script>
+
+</body>
+
+</html>

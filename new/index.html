@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Create a digitally signed diploma and store in the swarm decentralised storage by Krypted.">
+  <meta property="og:title" content="Krypted | Educhain Swarm - Proof of Concept" />
+  <meta property="og:description" content="Krypted | Educhain Swarm - Proof of Concept" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>EduChain | Krypted</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/assets/dist/css/material.css">
+  <link rel="stylesheet" href="/assets/dist/css/base.css">
+  <link rel="stylesheet" href="/assets/dist/css/new.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.0/vue-resource.min.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.min.js"></script>
+</head>
+
+<body class="mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header>
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">
+            <a href="/">
+              <img src="/assets/dist/img/logo.png" />
+            </a>
+          </span>
+          <div class="mdl-layout-spacer"></div>
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a class="mdl-navigation__link" href="/about">About</a>
+            <a class="mdl-navigation__link" href="/contact">Contact</a>
+          </nav>
+        </div>
+      </header>
+      <main class="mdl-layout__content" id="registration">
+        <div class="page-content">
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col">
+              <h4 class="mdl-color-text--white">Create a new diploma</h4>
+              <p class="mdl-color-text--white">Please fill the form to create your own diploma.</p>
+
+              <form action="fileupload" method="POST" class="block-action">
+                <div v-show="isLoading" class="create-new--loading">
+                  <p>
+                    Please wait for a moment while we're uploading your certificate to the decentralised storage...
+                  </p>
+                  <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+                </div>
+                <div v-show="isError" class="create-new--notification create-new--error">
+                  <p v-show="!message">
+                    There is an exception occured on Swarm gateway. Please try again.
+                  </p>
+                  <p v-show="message">
+                    {{message}}
+                  </p>
+                </div>
+
+                <div v-show="!!hash" class="create-new--notification create-new--info">
+                  <h3>DONE!</h3>
+                  <p>
+                    <a :href="'https://open.swarm-gateways.net/bzz:/' + hash + '/digitalProfile.ked'">Here's a link to the SWARM document.</a>
+                  </p>
+                  <p>
+                    <a :href="'/view/?certificate=' + hash">Click here for digital copy of your diploma.</a>
+                  </p>
+                </div>
+                <div v-show="!isLoading" class="create-new--form">
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="individualName" v-model="name">
+                    <label class="mdl-textfield__label" for="individualName">Name</label>
+                  </div>
+
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="individualLastName" v-model="lastname">
+                    <label class="mdl-textfield__label" for="individualName">Surname</label>
+                  </div>
+
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="individualGrade" v-model="grade">
+                    <label class="mdl-textfield__label" for="individualGrade">Grade</label>
+                  </div>
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="individualGrade" v-model="studentNumber">
+                    <label class="mdl-textfield__label" for="individualGrade">Student Number</label>
+                  </div>
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="individualUniversityName" v-model="universityName">
+                    <label class="mdl-textfield__label" for="individualUniversityName">University Name</label>
+                  </div>
+
+                  <ul class="mdl-list">
+                    GRADES
+                    <li class="mdl-list__item" v-for="item in items">
+                      <span class="mdl-list__item-primary-content">
+                          <!-- <i class="material-icons mdl-list__item-icon">grade</i> -->
+                          {{item.title}} ({{item.grade}})
+                        </span>
+                      <a class="mdl-list__item-secondary-action" href="#" v-on:click="deleteItem(item)"><i class="material-icons">delete</i></a>
+                    </li>
+                  </ul>
+                  <a v-on:click="createNewItem()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--radius">
+                    Add new grade
+                  </a>
+                </div>
+
+                <a v-on:click="save()" v-show="!isLoading" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-button--radius">
+                  Create a new diploma
+                </a>
+              </form>
+            </div>
+          </div>
+        </div>
+        <dialog class="mdl-dialog">
+          <div class="mdl-dialog__title">
+            New Entry
+          </div>
+          <div class="mdl-dialog__content">
+            <div class="mdl-textfield mdl-js-textfield">
+              <input class="mdl-textfield__input" type="text" id="item_title" v-model="item_title">
+              <label class="mdl-textfield__label" for="item_title">Course Name</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+              <input class="mdl-textfield__input" type="text" id="item_grade" v-model="item_grade">
+              <label class="mdl-textfield__label" for="item_grade">Course Grade</label>
+            </div>
+          </div>
+          <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+            <button type="button" class="mdl-button" v-on:click="saveDialog()">Save</button>
+            <button type="button" class="mdl-button" v-on:click="closeDialog()">Cancel</button>
+          </div>
+        </dialog>
+      </main>
+      <div class="copyright-section">
+        <div class="row">
+          <p> 2018 © <img src="/assets/dist/img/logoimg.png" height="25"> · All rights are reserved.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <script src="/assets/dist/js/material.min.js"></script>
+  <script src="/assets/dist/js/moment.min.js"></script>
+  <script src="/lib/app.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119866073-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-119866073-1');
+  </script>
+
+</body>
+
+</html>
